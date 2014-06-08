@@ -1783,9 +1783,9 @@ BlockChainConfig configs[] =
 	{ "PPC", "PeerCoin", 9902, 55, 117, 0xE5E9E8E6, 1000000, true },
 	{ "PPCT", "PeerCoin Testnet", 9904, 111, 196, 0xEFC0F2CB, 1000000, true },
 	{ "DOGE", "Dogecoin", 22555, 30, 22, 0xC0C0C0C0, 100000000 },
-    	{ "VTC", "Vertcoin", 5889, 71, 5, 0xDAB5BFFA, 100000000 },
-        { "MON", "Monocle", 6889, 50, 5, 0xEFFCD7E1, 100000000 },
-        { "PLX", "Parallax Coin", 7818, 55, 5, 0xDBB6C0FB, 100000000 },
+	{ "VTC", "Vertcoin", 5889, 71, 5, 0xDAB5BFFA, 100000000 },
+	{ "MON", "Monocle", 6889, 50, 5, 0xEFFCD7E1, 100000000 },
+	{ "PLX", "Parallax Coin", 7818, 55, 5, 0xDBB6C0FB, 100000000 },
 };
 
 // This is the implementation of the BlockChain parser interface
