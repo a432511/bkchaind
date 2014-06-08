@@ -11,7 +11,9 @@
 #include <iostream>
 #include "../json-rpc-cpp/src/jsonrpc/json/reader.h"
 
-typedef websocketpp::server<websocketpp::config::asio> server;
+typedef websocketpp::server<websocketpp::config::asio_tls> server;
+typedef websocketpp::config::asio::message_type::ptr message_ptr;
+typedef websocketpp::lib::shared_ptr<boost::asio::ssl::context> context_ptr;
 
 using websocketpp::connection_hdl;
 using websocketpp::lib::placeholders::_1;
@@ -30,12 +32,30 @@ public:
 	BroadcastWebsocketServer() {
 		// Initialize server
 		m_server.init_asio();
+		m_server.set_tls_init_handler(bind(&on_tls_init,::_1));
 		m_server.set_access_channels(websocketpp::log::alevel::connect | websocketpp::log::alevel::disconnect);
-
+		
 		// Register handlers for open, close and messages
 		m_server.set_open_handler(bind(&BroadcastWebsocketServer::on_open, this, ::_1));
 		m_server.set_close_handler(bind(&BroadcastWebsocketServer::on_close, this, ::_1));
 		m_server.set_message_handler(bind(&BroadcastWebsocketServer::on_message, this, ::_1, ::_2));
+	}
+
+	context_ptr on_tls_init(websocketpp::connection_hdl hdl) {
+		std::cout << "on_tls_init called with hdl: " << hdl.lock().get() << std::endl;
+		context_ptr ctx(new boost::asio::ssl::context(boost::asio::ssl::context::tlsv1));
+
+		try {
+        		ctx->set_options(boost::asio::ssl::context::default_workarounds |
+					 boost::asio::ssl::context::no_sslv2 |
+					 boost::asio::ssl::context::single_dh_use);
+			ctx->set_password_callback(bind(&get_password));
+			ctx->use_certificate_chain_file("chain.crt");
+			ctx->use_private_key_file("private.key", boost::asio::ssl::context::pem);
+		} catch (std::exception& e) {
+			std::cout << e.what() << std::endl;
+		}
+		return ctx;
 	}
 
 	void on_open(connection_hdl hdl) {
@@ -55,7 +75,7 @@ public:
 		m_livetx.erase(hdl);
 	}
 
-	void on_message(connection_hdl hdl, server::message_ptr msg) {
+	void on_message(connection_hdl hdl, message_ptr msg) {
 		std::lock_guard<std::mutex> lock(m_mutex);
 		auto& payload = msg->get_payload();
 		Json::Value value;
