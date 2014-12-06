@@ -1786,6 +1786,7 @@ BlockChainConfig configs[] =
 	{ "VTC", "Vertcoin", 5889, 71, 5, 0xDAB5BFFA, 100000000 },
 	{ "MON", "Monocle", 6889, 50, 5, 0xEFFCD7E1, 100000000 },
 	{ "PLX", "Parallax Coin", 7818, 55, 5, 0xDBB6C0FB, 100000000 },
+        { "VTCTEST", "Vertcoin Testnet", 15889, 73, 5, 0x74726576, 100000000 },
 };
 
 // This is the implementation of the BlockChain parser interface
